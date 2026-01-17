@@ -4,13 +4,13 @@ import json
 import re
 import time
 
-players = ["Magnojez"]
+players = ["XANTARES", "karrigan", "frozen"]
 
 API_URL = "https://liquipedia.net/counterstrike/api.php"
 
 # User-Agent for ToS of the API
 HEADERS = {
-    "User-Agent": "CS2Stats testing (aaronfinnilaa@gmail.com) Python requests"
+    "User-Agent": "CS2Stats testing Python requests"
 }
 
 def fetch_player_wikitext(player_name):
@@ -45,7 +45,7 @@ def parse_infobox(wikitext):
                     teams_text = str(t.get("team_history").value)
                     teams = re.split(r",|\n", teams_text)
                     info["team_history"] = [t.split("|")[-1].strip('}') for t in teams if t.strip()
-                                            and all(x not in t for x in ["Counter-Strike", "Substitute", "Inactive"])]
+                                            and all(x not in t for x in ["Counter-Strike", "Substitute", "Inactive", "Stand-in"])]
             break
     return info
 
@@ -93,7 +93,13 @@ def clean_teams(teams):
     for i, t in enumerate(teams):
         if "}" in t:
             teams[i] = t.split("}", 1)[0].strip()
-    return teams
+
+    teams_new = []
+    for t in teams:
+        if t not in teams_new:
+            teams_new.append(t)
+
+    return teams_new
 
 def fetch_player_data(player_name):
     wikitext = fetch_player_wikitext(player_name)
@@ -103,9 +109,8 @@ def fetch_player_data(player_name):
     for team in team_history:
         team_images.append(fetch_team_image(team))
         print(f"Fetched {team} image")
-        if team_history and team_history[-1] != team:
-            print(f"Waiting 30s...")
-            time.sleep(30) # Liquipedia ToS: 30s between parse requests
+        print(f"Waiting 30s...")
+        time.sleep(30) # Liquipedia ToS: 30s between parse requests
     
     player_data = {
         "name": player_name,
