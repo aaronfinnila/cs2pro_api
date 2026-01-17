@@ -8,9 +8,10 @@ players = ["XANTARES", "karrigan", "frozen"]
 
 API_URL = "https://liquipedia.net/counterstrike/api.php"
 
-# User-Agent for ToS of the API
+# Headers for ToS of the API
 HEADERS = {
-    "User-Agent": "CS2Stats testing Python requests"
+    "User-Agent": "CS2Stats (aaronfinnilaa@gmail.com) testing Python requests",
+    "Accept-Encoding": "gzip"
 }
 
 def fetch_player_wikitext(player_name):
